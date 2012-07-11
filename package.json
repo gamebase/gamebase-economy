@@ -1,6 +1,6 @@
 {
   "author": "Nathan Oehlman <nathan.oehlman@sidelab.com>",
-  "name": "economyengine",
+  "name": "gamebase-economy",
   "description": "Economy game engine",
   "version": "0.0.0",
   "main": "main.js",
@@ -15,5 +15,7 @@
     "underscore": "*",
     "node-graph": "https://github.com/nathanoehlman/node-graph/tarball/master"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "chai": "*"
+  }
 }
