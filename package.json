@@ -3,6 +3,7 @@
   "name": "economyengine",
   "description": "Economy game engine",
   "version": "0.0.0",
+  "main": "main.js",
   "repository": {
     "url": ""
   },

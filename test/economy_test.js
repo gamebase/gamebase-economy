@@ -1,18 +1,25 @@
 var _ = require('underscore'),
     expect = require('chai').expect,
-    Economy = require('../lib/economy'),
-    Node = require('../lib/node'),
-    Producer = require('../lib/producer'),
-    world = new Economy();
+    gamebaseEconomy = require('..'),
+    exportSorter = new gamebaseEconomy.trade.exports.PriceSorter(),
+    importRanker = new gamebaseEconomy.trade.imports.WeightedAnalyzer(50, 50),
+    world = new gamebaseEconomy.Economy();
 
 describe('test the supply and demand of a simple economy', function() {
     
     before(function(done) {
         
-        var planet1 = new Node('planet1', {credits: 500});        
+        var transportation = new gamebaseEconomy.phase.transportation.SimpleTransportation({
+            transport: {
+                speed: 100
+            }
+        });        
+        transportation.listenTo(world);
+        
+        var planet1 = new gamebaseEconomy.Node('planet1', {account: {credits: 500}});        
         world.insertNode(planet1);
         
-        planet1.addProducer(new Producer({
+        planet1.addProducer(new gamebaseEconomy.production.Producer({
             name: 'farm',
             produces: {
                 commodity: 'wheat',
@@ -21,7 +28,7 @@ describe('test the supply and demand of a simple economy', function() {
             }
         }));
         
-        planet1.addProducer(new Producer({
+        planet1.addProducer(new gamebaseEconomy.production.Producer({
             name: 'bakery',
             produces: {
                 commodity: 'bread',
@@ -33,10 +40,11 @@ describe('test the supply and demand of a simple economy', function() {
             }
         }));
         
-        planet1.exportCommodity('bread', { price: '10', minStock: 10}); 
+        planet1.exportCommodity('bread', { minPrice: 10, minStock: 10, bidSorter: exportSorter});
+        planet1.importCommodity('iron', { maxPrice: 200, analyzer: importRanker});
         
-        var planet2 = new Node('planet2', {credits: 500});
-        planet1.addProducer(new Producer({
+        var planet2 = new gamebaseEconomy.Node('planet2', {account: {credits: 5000}});
+        planet2.addProducer(new gamebaseEconomy.production.Producer({
             name: 'ironmine',
             produces: {
                 commodity: 'iron',
@@ -49,6 +57,9 @@ describe('test the supply and demand of a simple economy', function() {
         }));
         
         world.insertNode(planet2, ['planet1'], 1000);  
+        
+        planet2.importCommodity('bread', {maxSpend: 200, minimumStock: 150, maxPrice: 15, analyzer: importRanker});
+        planet2.exportCommodity('iron', {minPrice: 200, minStock: 5, bidSorter: exportSorter});
         done();
     });
 
