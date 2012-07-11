@@ -56,7 +56,7 @@ describe('test the supply and demand of a simple economy', function() {
             }
         }));
         
-        world.insertNode(planet2, ['planet1'], 1000);  
+        world.insertNode(planet2, [{node: 'planet1', distance: 1000}]);  
         
         planet2.importCommodity('bread', {maxSpend: 200, minimumStock: 150, maxPrice: 15, analyzer: importRanker});
         planet2.exportCommodity('iron', {minPrice: 200, minStock: 5, bidSorter: exportSorter});
